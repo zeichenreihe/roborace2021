@@ -1,0 +1,9 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+	"files.eol": "\n",
+	"debug.openDebug": "neverOpen",
+	"python.linting.enabled": false,
+	"python.languageServer": "Pylance",
+	"python.analysis.stubPath": "C:\\Users\\johannes\\.venv\\autocomplete",
+	"python.pythonPath": "c:\\Users\\johannes\\.venv\\Scripts\\python.exe"
+}
