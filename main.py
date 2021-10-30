@@ -10,6 +10,7 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 from motor_control import MotorControl
 from logger import LOGGER, TIMER
 from sensors import Sensors
+from utils import Utils
 import properties
 
 ev3 = EV3Brick()
@@ -18,7 +19,7 @@ controller = MotorControl()
 sensors = Sensors()
 
 
-sensors.measure_reflection_drive_area(ev3, TIMER, controller)
+Utils.mrda(ev3, TIMER, sensors, controller)
 
 
 #sensors.set_reflection([

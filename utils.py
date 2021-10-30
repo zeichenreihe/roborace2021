@@ -8,8 +8,8 @@ from motor_control import MotorControl
 import properties
 
 class Utils:
-    def measure_reflection(sensors:Sensors, ev3:EV3Brick, watch:StopWatch):
-        "blocks execution, prints the values of the reflection from the color sensor"
+    def mr(ev3:EV3Brick, watch:StopWatch, sensors:Sensors):
+        "measure reflection - blocks execution, prints the values of the reflection from the color sensor"
         while True:
             ev3.screen.clear()
             value = sensors.color_sensor.reflection()
@@ -18,7 +18,8 @@ class Utils:
             ev3.screen.print(str(time))
             ev3.screen.print(str(value))
             wait(100)     
-    def measure_reflection_drive_area(sensors:Sensors, ev3:EV3Brick, watch:StopWatch, controller:MotorControl):
+    def mrda(ev3:EV3Brick, watch:StopWatch, sensors:Sensors, controller:MotorControl):
+        "measure reflection drive area - automatically (setup in 90° to drive direction) drives accross the area"
         ev3.screen.clear()
         values = []
         for i in range(3):
