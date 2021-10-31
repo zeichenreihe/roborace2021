@@ -14,13 +14,20 @@ from utils import Utils
 import properties
 
 ev3 = EV3Brick()
-ev3.speaker.beep()
+#Utils.beep(ev3)
 controller = MotorControl()
 sensors = Sensors()
 
+print(sensors.reflection_converter(58))
+print(sensors.reflection_converter(34))
+print(sensors.reflection_converter(12))
 
-Utils.mrda(ev3, TIMER, sensors, controller)
+Utils.mrda_print_only(ev3, TIMER, sensors, controller)
 
+
+print(sensors.reflection_converter(58))
+print(sensors.reflection_converter(34))
+print(sensors.reflection_converter(12))
 
 #sensors.set_reflection([
 #    (0, 12),
