@@ -1,21 +1,25 @@
-from pybricks.ev3devices import ColorSensor
-from pybricks.parameters import Port
+from pybricks.ev3devices import ColorSensor, TouchSensor
 from pybricks.parameters import Color
+
 import properties
 
 class Sensors():
-    color_sensor = ColorSensor(Port.S1)
+    color_sensor = ColorSensor(properties.Ports.color_sensor)
+    touch_sensor = TouchSensor(properties.Ports.touch_sensor)
 
-    reflection_converter = lambda self, x: (x - properties.ReflectionMeasurement.c) / properties.ReflectionMeasurement.m
+    reflection_converter = lambda self, x: x * properties.ReflectionMeasurement.m + properties.ReflectionMeasurement.c
 
     def is_blue(self):
         return self.color_sensor.color() == Color.BLUE
 
     def color(self):
         return self.color_sensor.color()
+
+    def is_pressed(self):
+        return self.touch_sensor.pressed()
     
     def set_reflection(self, m, c):
-        self.reflection_converter =  lambda x: (x - c) / m
+        self.reflection_converter =  lambda x: x * m + c
         properties.ReflectionMeasurement.m = m
         properties.ReflectionMeasurement.c = c
     
