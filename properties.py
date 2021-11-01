@@ -1,15 +1,22 @@
 from pybricks.parameters import Port
-DRIVE_AREA_WIDTH = 38#cm
-SENSOR_WIDTH = 2#cm
+
+class DriveArea:
+    width = 38#cm
 
 class ReflectionMeasurement:
-    m = 8.70625 # f(x) = m * x + c
-    c = 0.5025
+    # f(x) = m * x + c = 2.083333333333333  * x + -18.05555555555556
+    m = 2.083333333333333
+    c = -18.05555555555556
     v = 10
 
 class Ports:
     big_motor = Port.A
     direction_motor = Port.D
 
+    color_sensor = Port.S1
+    touch_sensor = Port.S2
+
 class Brick:
+    sensor_width = 2#cm
     is_silent = False
+    tps = 20
