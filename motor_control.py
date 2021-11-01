@@ -17,10 +17,12 @@ class MotorControl():
     turn_blocking = True
 
     def change_v_relative(self, Δv):
-        v_curr = self.main_motor.speed()
-        self.main_motor.run(Δv + v_curr)
+        self.current_speed = self.main_motor.speed()
+        self.current_speed += Δv
+        self.main_motor.run(self.current_speed)
     
     def change_v_absolute(self, v):
+        self.current_speed = v
         self.main_motor.run(v)
     
     def change_Δs_relative(self, Δs, v, blocking):

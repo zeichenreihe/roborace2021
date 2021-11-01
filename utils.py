@@ -101,7 +101,7 @@ class Utils:
 
         Utils.beep(ev3)
         print("last time that tick() took: " + str(Δt))
-
+        controller.stop()
         controller.angle_absolute(0, True)
     
     def tick(ev3:EV3Brick, controller:MotorControl, sensors:Sensors, watch:StopWatch, log:Logger):
