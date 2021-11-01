@@ -1,23 +1,23 @@
+from pybricks.hubs import EV3Brick
+from pybricks.tools import StopWatch, wait
+
+import properties
+from logger import Logger
+from motor_control import MotorControl
 from sensors import Sensors
 
-from pybricks.hubs import EV3Brick
-from pybricks.tools import StopWatch
-from pybricks.tools import wait
-
-from motor_control import MotorControl
-import properties
 
 class Utils:
     def get_f_x_refleciton():
         return "f(x) = " + str(properties.ReflectionMeasurement.m) + "  * x + " + str(properties.ReflectionMeasurement.c)
     
-    def mr(ev3:EV3Brick, watch:StopWatch, sensors:Sensors):
+    def mr(ev3:EV3Brick, watch:StopWatch, sensors:Sensors, controller:MotorControl):
         "measure reflection - blocks execution, prints the values of the reflection from the color sensor"
         while True:
             ev3.screen.clear()
-            value = sensors.color_sensor.reflection()
+            value = sensors.reflection()
             time = watch.time()
-            print(str(time) + "\t\t" + str(value))
+            print(str(time) + "\t" + str(value) + "\t" + str(sensors.reflection_converter(value)))
             ev3.screen.print(str(time))
             ev3.screen.print(str(value))
             wait(100)     
@@ -30,7 +30,7 @@ class Utils:
         n = 4
         
         values = []
-        distance_between_measurement_points = (properties.DRIVE_AREA_WIDTH - properties.SENSOR_WIDTH) / (n - 1)
+        distance_between_measurement_points = (properties.DriveArea.width - properties.Brick.sensor_width) / (n - 1)
         for i in range(n):
             Utils.beep(ev3)
             value = sensors.reflection()
@@ -40,8 +40,8 @@ class Utils:
             ev3.screen.print(str(i) + " " + str(value))
 
             values.append((
-                i * 100/ (n - 1),
-                value
+                value,
+                i * 100/ (n - 1)
             ))
             if i in range(n - 1):
                 controller.change_Δs_relative(distance_between_measurement_points, properties.ReflectionMeasurement.v, True)
@@ -65,7 +65,7 @@ class Utils:
     
     def mrda_print_only(ev3:EV3Brick, watch:StopWatch, sensors:Sensors, controller:MotorControl):
         n = 20
-        distance_between_measurement_points = (properties.DRIVE_AREA_WIDTH - properties.SENSOR_WIDTH) / (n - 1)
+        distance_between_measurement_points = (properties.DriveArea.width - properties.Brick.sensor_width) / (n - 1)
         for i in range(n):
             Utils.beep(ev3)
             value = sensors.reflection()
@@ -75,6 +75,39 @@ class Utils:
             if i in range(n - 1):
                 controller.change_Δs_relative(distance_between_measurement_points, properties.ReflectionMeasurement.v, True)
     
+    def await_button_release(ev3:EV3Brick, sensors:Sensors):
+        while not sensors.is_pressed():
+            while not sensors.is_pressed():
+                wait(100)
+            wait(1000)
+        Utils.beep(ev3)
+        while sensors.is_pressed():
+            wait(100)
+        Utils.beep(ev3)
+
+    def main(ev3:EV3Brick, TIMER:StopWatch, sensors:Sensors, controller:MotorControl, LOGGER:Logger, v):
+        Utils.beep(ev3)
+
+        T = int(1000 / properties.Brick.tps)
+        Utils.await_button_release(ev3, sensors)
+
+        controller.change_v_absolute(v)
+        while not sensors.is_pressed():
+            t_start = TIMER.time()
+            Utils.tick(ev3, controller, sensors, TIMER, LOGGER)
+            Δt = TIMER.time() - t_start
+            Δt_wait = T - Δt
+            wait(Δt_wait if Δt_wait > 0 else 0)
+
+        Utils.beep(ev3)
+        print("last time that tick() took: " + str(Δt))
+
+        controller.angle_absolute(0, True)
+    
+    def tick(ev3:EV3Brick, controller:MotorControl, sensors:Sensors, watch:StopWatch, log:Logger):
+        controller.angle_track(sensors.reflection_converted() - 50)
+        #print(str(sensors.reflection_converted()))
+
     def beep(ev3:EV3Brick):
         if not properties.Brick.is_silent:
             ev3.speaker.beep()
