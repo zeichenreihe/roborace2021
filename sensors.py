@@ -1,4 +1,4 @@
-from pybricks.ev3devices import ColorSensor, TouchSensor
+from pybricks.ev3devices import ColorSensor, TouchSensor, UltrasonicSensor
 from pybricks.parameters import Color
 
 import properties
@@ -6,6 +6,7 @@ import properties
 class Sensors():
     color_sensor = ColorSensor(properties.Ports.color_sensor)
     touch_sensor = TouchSensor(properties.Ports.touch_sensor)
+    distance_sensor = UltrasonicSensor(properties.Ports.distance_sensor)
 
     reflection_converter = lambda self, x: x * properties.ReflectionMeasurement.m + properties.ReflectionMeasurement.c
 
@@ -29,3 +30,7 @@ class Sensors():
     def reflection_converted(self):
         "returns the position of the sensor from 0 (black) to 100 (white)"
         return self.reflection_converter(self.reflection())
+    
+    def distance(self):
+        "returns the distance from the ultrasonic sensor in cm"
+        return self.distance_sensor.distance() / 10
