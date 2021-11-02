@@ -15,7 +15,7 @@ class Ports:
     shoot_motor = Port.B
 
     color_sensor = Port.S1
-    touch_sensor = Port.S2
+    touch_sensor = Port.S4
     distance_sensor = Port.S3
 
 class Brick:

@@ -16,6 +16,9 @@ class MotorControl():
     turn_motor_speed = 20
     turn_blocking = True
 
+    shoot_motor = Motor(properties.Ports.shoot_motor, Direction.CLOCKWISE, [24, 40])
+    shoot_motor_speed = 50
+
     def change_v_relative(self, Δv):
         self.current_speed = self.main_motor.speed()
         self.current_speed += Δv
@@ -42,3 +45,7 @@ class MotorControl():
     
     def angle_track(self, angle_to_track):
         self.turn_motor.track_target(angle_to_track)
+
+    def shoot(self):
+        self.shoot_motor.run_angle(self.shoot_motor_speed, 180, Stop.HOLD, True)
+        self.shoot_motor.run_angle(self.shoot_motor_speed, 180, Stop.HOLD, False)
