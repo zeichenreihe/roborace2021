@@ -12,9 +12,11 @@ class ReflectionMeasurement:
 class Ports:
     big_motor = Port.A
     direction_motor = Port.D
+    shoot_motor = Port.B
 
     color_sensor = Port.S1
     touch_sensor = Port.S2
+    distance_sensor = Port.S3
 
 class Brick:
     sensor_width = 2#cm
