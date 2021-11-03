@@ -105,7 +105,7 @@ class Utils:
         controller.angle_absolute(0, True)
     
     def tick(ev3:EV3Brick, controller:MotorControl, sensors:Sensors, watch:StopWatch, log:Logger):
-        controller.angle_track(sensors.reflection_converted() - 50)
+        controller.angle_track(sensors.reflection_converted() - properties.DriveSetting.center)
         #print(str(sensors.reflection_converted()))
 
     def beep(ev3:EV3Brick):

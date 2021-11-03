@@ -22,3 +22,6 @@ class Brick:
     sensor_width = 2#cm
     is_silent = False
     tps = 20
+
+class DriveSetting:
+    center = 30 # the center in percent from black to white
