@@ -45,6 +45,9 @@ class MotorControl():
     
     def angle_track(self, angle_to_track):
         self.turn_motor.track_target(angle_to_track)
+    
+    def get_angle(self):
+        return self.turn_motor.angle()
 
     def shoot(self, blocking = False):
         self.shoot_motor.run_angle(self.shoot_motor_speed, 205, Stop.HOLD, True)

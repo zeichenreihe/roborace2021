@@ -6,6 +6,12 @@ from logger import Logger
 from motor_control import MotorControl
 from sensors import Sensors
 
+class DataStorage:
+    last_reflection = 0
+    reflection_integral = 0
+
+    def add_to_reflection_integral(self, reflection):
+        self.reflection_integral += reflection
 
 class Utils:
     def get_f_x_refleciton():
@@ -91,10 +97,12 @@ class Utils:
         T = int(1000 / properties.Brick.tps)
         Utils.await_button_release(ev3, sensors)
 
+        storage = DataStorage()
+
         controller.change_v_absolute(v)
         while not sensors.is_pressed():
             t_start = TIMER.time()
-            Utils.tick(ev3, controller, sensors, TIMER, LOGGER)
+            Utils.tick(ev3, controller, sensors, TIMER, LOGGER, storage)
             Δt = TIMER.time() - t_start
             Δt_wait = T - Δt
             wait(Δt_wait if Δt_wait > 0 else 0)
@@ -104,8 +112,20 @@ class Utils:
         controller.stop()
         controller.angle_absolute(0, True)
     
-    def tick(ev3:EV3Brick, controller:MotorControl, sensors:Sensors, watch:StopWatch, log:Logger):
-        controller.angle_track(sensors.reflection_converted() - properties.DriveSetting.center)
+    def tick(ev3:EV3Brick, controller:MotorControl, sensors:Sensors, watch:StopWatch, log:Logger, storage:DataStorage):
+        reflection = sensors.reflection_converted() - properties.DriveSetting.center
+        last_reflection = storage.last_reflection
+        storage.last_reflection = reflection
+        storage.add_to_reflection_integral(reflection)
+        reflection_integral = storage.reflection_integral
+
+        Δreflection = last_reflection - reflection
+
+        controller.angle_track(
+            properties.DriveSetting.Kp * reflection +
+            properties.DriveSetting.Ki * reflection_integral +
+            properties.DriveSetting.Kd * Δreflection
+        )
         #print(str(sensors.reflection_converted()))
 
     def beep(ev3:EV3Brick):

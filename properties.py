@@ -4,9 +4,9 @@ class DriveArea:
     width = 38#cm
 
 class ReflectionMeasurement:
-    # f(x) = m * x + c = 2.083333333333333  * x + -18.05555555555556
-    m = 2.083333333333333
-    c = -18.05555555555556
+    # f(x) = m * x + c = 1.87793427230047 * x + -14.6322378716745
+    m = 1.87793427230047
+    c = -14.6322378716745
     v = 10
 
 class Ports:
@@ -24,4 +24,7 @@ class Brick:
     tps = 20
 
 class DriveSetting:
-    center = 30 # the center in percent from black to white
+    center = 50 # the center in percent from black to white
+    Kp = 2
+    Ki = 0
+    Kd = 0
