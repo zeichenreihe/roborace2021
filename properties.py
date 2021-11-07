@@ -23,8 +23,17 @@ class Brick:
     is_silent = False
     tps = 20
 
+class MotorControl:
+    turn_motor_speed = 60
+
+    shoot_motor_speed = 80
+    
+    α_per_s = 942 / 40
+    main_motor_full_speed = 10
+
 class DriveSetting:
+    v = 400
     center = 50 # the center in percent from black to white
-    Kp = 2
+    Kp = 2.5
     Ki = 0
-    Kd = 0
+    Kd = -0.5

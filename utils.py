@@ -91,15 +91,16 @@ class Utils:
             wait(100)
         Utils.beep(ev3)
 
-    def main(ev3:EV3Brick, TIMER:StopWatch, sensors:Sensors, controller:MotorControl, LOGGER:Logger, v):
+    def main(ev3:EV3Brick, TIMER:StopWatch, sensors:Sensors, controller:MotorControl, LOGGER:Logger, await_release):
         Utils.beep(ev3)
 
         T = int(1000 / properties.Brick.tps)
-        Utils.await_button_release(ev3, sensors)
+        if await_release:
+            Utils.await_button_release(ev3, sensors)
 
         storage = DataStorage()
 
-        controller.change_v_absolute(v)
+        controller.change_v_absolute(properties.DriveSetting.v)
         while not sensors.is_pressed():
             t_start = TIMER.time()
             Utils.tick(ev3, controller, sensors, TIMER, LOGGER, storage)
