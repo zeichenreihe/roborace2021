@@ -72,15 +72,20 @@ class Utils:
     def mrda_print_only(ev3:EV3Brick, watch:StopWatch, sensors:Sensors, controller:MotorControl):
         n = 20
         distance_between_measurement_points = (properties.DriveArea.width - properties.Brick.sensor_width) / (n - 1)
+        print("m = {", end = "")
+
         for i in range(n):
             Utils.beep(ev3)
             value = sensors.reflection()
             
-            print("(" + str(i * 100 / (n - 1)) + "," + str(value) + "),")
+            print("(" + str(i * 100 / (n - 1)) + "," + str(value) + ")", end = "")
 
             if i in range(n - 1):
+                print(",", end = "")
                 controller.change_Δs_relative(distance_between_measurement_points, properties.ReflectionMeasurement.v, True)
-    
+
+        print("}")
+
     def await_button_release(ev3:EV3Brick, sensors:Sensors):
         while not sensors.is_pressed():
             while not sensors.is_pressed():
