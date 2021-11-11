@@ -32,7 +32,7 @@ class MotorControl:
     main_motor_full_speed = 10
 
 class DriveSetting:
-    v = 400
+    v = 1000
     center = 50 # the center in percent from black to white
     Kp = 2.5
     Ki = 0

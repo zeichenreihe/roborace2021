@@ -21,4 +21,4 @@ sensors = Sensors()
 #Utils.mrda_print_only(ev3, TIMER, sensors, controller)
 #Utils.mr(ev3, TIMER, sensors, controller)
 
-Utils.main(ev3, TIMER, sensors, controller, LOGGER, False)
+Utils.main(ev3, TIMER, sensors, controller, LOGGER, True)
