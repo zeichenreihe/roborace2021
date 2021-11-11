@@ -25,7 +25,7 @@ class MotorControl():
     
     def change_Δs_relative(self, Δs, v, blocking):
         "Δs in m/s, v in deg/s"
-        α_rotation = Δs * self.α_per_s
+        α_rotation = Δs * properties.MotorControl.α_per_s
         self.main_motor.run_angle(v, α_rotation, Stop.HOLD, blocking)
     
     def stop(self):
