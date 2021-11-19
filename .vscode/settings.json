@@ -6,5 +6,5 @@
 	"python.languageServer": "Pylance",
 	"python.analysis.stubPath": "C:\\Users\\johannes\\.venv\\autocomplete",
 	"python.pythonPath": "c:\\Users\\johannes\\.venv\\Scripts\\python.exe",
-	"ev3devBrowser.download.exclude": "{dennis.py,LICENSE,.vscode/*.json,.gitignore}"
+	"ev3devBrowser.download.exclude": "{dennis.py,LICENSE,.vscode/*.json,.gitignore,data/*}"
 }
