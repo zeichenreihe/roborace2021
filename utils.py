@@ -2,7 +2,7 @@ from pybricks.hubs import EV3Brick
 from pybricks.tools import StopWatch, wait
 
 import properties
-from logger import Logger
+from logger import LOGGER, TIMER, Logger
 from motor_control import MotorControl
 from sensors import Sensors
 
@@ -12,6 +12,18 @@ class DataStorage:
 
     def add_to_reflection_integral(self, reflection):
         self.reflection_integral += reflection
+
+    action = 0
+    def set_action(self, ev3, action):
+        self.action = action
+        Utils.beep(ev3)
+    def is_action(self, action):
+        return self.action == action
+    class actions:
+        WAIT_WALL = 0
+        WAIT_WHITE = 1
+        WAIT_BLUE = 2
+        NONE =  3
 
 class Utils:
     def get_f_x_refleciton():
@@ -96,6 +108,39 @@ class Utils:
             wait(100)
         Utils.beep(ev3)
 
+    def shoot_to_min(ev3:EV3Brick, TIMER:StopWatch, sensors:Sensors, controller:MotorControl, LOGGER:Logger):
+        max_α = 80
+        steps = 34 # we do 34 steps in total, 17 for each side
+        shoot_offset = 20 # offset to shoot in drive direction to the side
+
+        ANGLE_PER_STEP = 2 * max_α / steps
+        data = []
+        for i in range(steps):
+            data.append(0)
+
+        controller.angle_absolute(-max_α)
+
+        min_index = 0
+        for i in range(steps):
+            if not (i is 0):
+                controller.angle_relative(ANGLE_PER_STEP)
+            data[i] = sensors.distance()
+            print(str(i) + " " + str(data[i]))
+            if data[min_index] > data[i]:
+                min_index = i
+        
+        angle_to = min_index * ANGLE_PER_STEP
+        angle_to -= max_α
+        controller.angle_absolute(angle_to + shoot_offset)
+
+        print(str(min_index) + " " + str(angle_to) + " " + str(max_α) + " " + str(ANGLE_PER_STEP))
+        
+        if properties.Brick.shoot:
+            Utils.beep(ev3)
+            controller.shoot(True)
+        
+        controller.angle_absolute(0)
+
     def main(ev3:EV3Brick, TIMER:StopWatch, sensors:Sensors, controller:MotorControl, LOGGER:Logger, await_release):
         Utils.beep(ev3)
 
@@ -104,6 +149,7 @@ class Utils:
             Utils.await_button_release(ev3, sensors)
 
         storage = DataStorage()
+        storage.set_action(ev3, storage.actions.WAIT_WALL)
 
         controller.change_v_absolute(properties.DriveSetting.v)
         while not sensors.is_pressed():
@@ -127,11 +173,39 @@ class Utils:
 
         Δreflection = last_reflection - reflection
 
-        controller.angle_track(
-            properties.DriveSetting.Kp * reflection +
-            properties.DriveSetting.Ki * reflection_integral +
-            properties.DriveSetting.Kd * Δreflection
-        )
+        distance = sensors.distance()
+        factor = 1
+        if storage.action == storage.actions.WAIT_WALL:
+            if distance < (properties.DriveArea.width * 0.6):
+                #print("wall!")
+                storage.set_action(ev3, storage.actions.WAIT_WHITE)
+        
+        if storage.action == storage.actions.WAIT_WHITE:
+            factor = 0.1
+            if (last_reflection - reflection) < - properties.DriveSetting.from_gradient_to_white:
+                #print("white!")
+                storage.set_action(ev3, storage.actions.WAIT_BLUE)
+            #print(str(reflection))
+        
+        if storage.action == storage.actions.WAIT_BLUE:
+            controller.angle_track(0)
+            if sensors.is_blue():
+                #print("blue!")
+                #controller.stop()
+                controller.main_motor.hold()
+                controller.change_Δs_relative(5, properties.DriveSetting.v, True)
+                
+                Utils.beep(ev3)
+                Utils.shoot_to_min(ev3, TIMER, sensors, controller, LOGGER)
+
+                controller.change_v_absolute(properties.DriveSetting.v)
+                storage.set_action(ev3, storage.actions.NONE)
+        else:
+            controller.angle_track(
+                properties.DriveSetting.Kp * factor * reflection +
+                properties.DriveSetting.Ki * factor * reflection_integral +
+                properties.DriveSetting.Kd * factor * Δreflection
+            )
         #print(str(sensors.reflection_converted()))
 
     def beep(ev3:EV3Brick):
