@@ -22,3 +22,5 @@ sensors = Sensors()
 #Utils.mr(ev3, TIMER, sensors, controller)
 
 Utils.main(ev3, TIMER, sensors, controller, LOGGER, True)
+
+#Utils.shoot_to_min(ev3, TIMER, sensors, controller, LOGGER)
