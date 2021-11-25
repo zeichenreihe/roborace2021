@@ -39,7 +39,8 @@ class MotorControl():
         self.turn_motor.run_angle(v, angle_to_rotate, hold, blocking)
     
     def angle_track(self, angle_to_track):
-        self.turn_motor.track_target(angle_to_track)
+        self.angle_absolute(angle_to_track, False, Stop.COAST)
+        #self.turn_motor.track_target(angle_to_track)
     
     def get_angle(self):
         return self.turn_motor.angle()
