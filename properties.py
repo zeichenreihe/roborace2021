@@ -1,6 +1,8 @@
 from pybricks.parameters import Port
 
 class DriveArea:
+    parabola_in_semicircle = True
+    parabola_angle = 47#° 0° ≙ in 90° from dirve area, 90° ≙ in drive direction
     width = 38#cm
 
 class ReflectionMeasurement:
@@ -20,21 +22,25 @@ class Ports:
 
 class Brick:
     shoot = True
+    skip_shoot = False
+    shoot_correction = True
+    shoot_correction_function = lambda x: - (36 / 32 * x)#abs(x - 16) / 2
+
     sensor_width = 2#cm
     is_silent = False
     tps = 20
 
 class MotorControl:
-    turn_motor_speed = 60
+    turn_motor_speed = 300
 
-    shoot_motor_speed = 80
+    shoot_motor_speed = 300
     
     α_per_s = 942 / 40
     main_motor_full_speed = 10
 
 class DriveSetting:
     v = 300
-    center = 50 # the center in percent from black to white
+    center = 60 # the center in percent from black to white
     Kp = 2.5
     Ki = 0
     Kd = -0.5
