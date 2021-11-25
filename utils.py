@@ -109,35 +109,44 @@ class Utils:
         Utils.beep(ev3)
 
     def shoot_to_min(ev3:EV3Brick, TIMER:StopWatch, sensors:Sensors, controller:MotorControl, LOGGER:Logger):
-        max_α = 80
+        max_α = 90
         steps = 34 # we do 34 steps in total, 17 for each side
-        shoot_offset = 20 # offset to shoot in drive direction to the side
+        shoot_offset = 10 # offset to shoot in drive direction to the side
 
         ANGLE_PER_STEP = 2 * max_α / steps
-        data = []
-        for i in range(steps):
-            data.append(0)
+        if properties.Brick.skip_shoot:
+            angle_to = properties.DriveArea.parabola_angle
+            shoot_offset = 0
+        else:
+            data = []
+            for i in range(steps):
+                data.append(0)
 
-        controller.angle_absolute(-max_α)
+            controller.angle_absolute(-max_α)
 
-        min_index = 0
-        for i in range(steps):
-            if not (i is 0):
-                controller.angle_relative(ANGLE_PER_STEP)
-            data[i] = sensors.distance()
-            print(str(i) + " " + str(data[i]))
-            if data[min_index] > data[i]:
-                min_index = i
-        
-        angle_to = min_index * ANGLE_PER_STEP
-        angle_to -= max_α
+            min_index = 0
+            for i in range(steps):
+                if not (i is 0):
+                    controller.angle_relative(ANGLE_PER_STEP)
+                data[i] = sensors.distance()
+
+                if properties.Brick.shoot_correction:
+                    data[i] = data[i] + properties.Brick.shoot_correction_function(i)
+
+                print(str(i) + " " + str(data[i]))
+                if data[min_index] > data[i]:
+                    min_index = i
+            
+            angle_to = min_index * ANGLE_PER_STEP
+            angle_to -= max_α
         controller.angle_absolute(angle_to + shoot_offset)
 
-        print(str(min_index) + " " + str(angle_to) + " " + str(max_α) + " " + str(ANGLE_PER_STEP))
+        if not properties.Brick.skip_shoot:
+            print(str(min_index) + " " + str(angle_to) + " " + str(max_α) + " " + str(ANGLE_PER_STEP))
         
         if properties.Brick.shoot:
             Utils.beep(ev3)
-            controller.shoot(True)
+            controller.shoot()
         
         controller.angle_absolute(0)
 
@@ -175,7 +184,7 @@ class Utils:
 
         distance = sensors.distance()
         factor = 1
-        if storage.action == storage.actions.WAIT_WALL:
+        if storage.action == storage.actions.WAIT_WALL and properties.DriveArea.parabola_in_semicircle:
             if distance < (properties.DriveArea.width * 0.6):
                 #print("wall!")
                 storage.set_action(ev3, storage.actions.WAIT_WHITE)
