@@ -109,9 +109,9 @@ class Utils:
         Utils.beep(ev3)
 
     def shoot_to_min(ev3:EV3Brick, TIMER:StopWatch, sensors:Sensors, controller:MotorControl, LOGGER:Logger):
-        max_α = 90
+        max_α = 80
         steps = 34 # we do 34 steps in total, 17 for each side
-        shoot_offset = 10 # offset to shoot in drive direction to the side
+        shoot_offset = 0 # offset to shoot in drive direction to the side
 
         ANGLE_PER_STEP = 2 * max_α / steps
         if properties.Brick.skip_shoot:
@@ -190,7 +190,7 @@ class Utils:
                 storage.set_action(ev3, storage.actions.WAIT_WHITE)
         
         if storage.action == storage.actions.WAIT_WHITE:
-            factor = 0.1
+            factor = 0.8
             if (last_reflection - reflection) < - properties.DriveSetting.from_gradient_to_white:
                 #print("white!")
                 storage.set_action(ev3, storage.actions.WAIT_BLUE)
@@ -207,6 +207,8 @@ class Utils:
                 Utils.beep(ev3)
                 Utils.shoot_to_min(ev3, TIMER, sensors, controller, LOGGER)
 
+                properties.DriveSetting.center = 50
+                properties.DriveSetting.v += 200
                 controller.change_v_absolute(properties.DriveSetting.v)
                 storage.set_action(ev3, storage.actions.NONE)
         else:

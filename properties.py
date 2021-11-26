@@ -6,9 +6,9 @@ class DriveArea:
     width = 38#cm
 
 class ReflectionMeasurement:
-    # f(x) = m * x + c = 1.96078431372549 * x + -16.01307189542484
-    m = 1.96078431372549
-    c = -16.01307189542484
+    # f(x) = m * x + c = 2.424242424242424 * x + -23.73737373737374
+    m = 2.424242424242424
+    c = -23.73737373737374
     v = 10
 
 class Ports:
@@ -24,7 +24,10 @@ class Brick:
     shoot = True
     skip_shoot = False
     shoot_correction = True
-    shoot_correction_function = lambda x: - (36 / 32 * x)#abs(x - 16) / 2
+    shoot_correction_function = lambda x: 0
+    #shoot_correction_function = lambda x: - (15 / 31)  * x + 15
+    #shoot_correction_function = lambda x: - (36 / 32 * x)
+    #shoot_correction_function = lambda x: abs(x - 16) / 2
 
     sensor_width = 2#cm
     is_silent = False
@@ -39,9 +42,9 @@ class MotorControl:
     main_motor_full_speed = 10
 
 class DriveSetting:
-    v = 300
-    center = 60 # the center in percent from black to white
-    Kp = 2.5
+    v = 450
+    center = 70 # the center in percent from black to white
+    Kp = 1.5#2.5
     Ki = 0
     Kd = -0.5
 
